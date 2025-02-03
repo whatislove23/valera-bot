@@ -7,6 +7,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from pydub import AudioSegment
 import edge_tts
 from appLor import lore
+from dotenv import load_dotenv
 
 initial_message = {"role": "system", "content": lore}
 history = [initial_message]
@@ -18,7 +19,7 @@ recognizer = sr.Recognizer()
 
 
 async def generate_image_response(message: str, user_name: str):
- return
+ return "Сам знайди"
 
 
 async def generate_response(message: str, user_name: str) -> str:
@@ -79,15 +80,15 @@ async def process_text_message(update: Update, context: ContextTypes.DEFAULT_TYP
     user_message = update.message.text.lower()
     user_name = update.message.from_user.first_name
     
-    if "валера розкажи" in user_message or (update.message.reply_to_message and update.message.reply_to_message.voice and update.message.reply_to_message.from_user.id == context.bot.id):
+    if "валера розкажи" or "валєра" in user_message or (update.message.reply_to_message and update.message.reply_to_message.voice and update.message.reply_to_message.from_user.id == context.bot.id):
         message = await generate_response(user_message, user_name)
         file_path = await asyncio.create_task(generate_voice_message(message))
         with open(file_path, "rb") as file:
             await update.message.reply_voice(file, duration=AudioSegment.from_ogg(file_path).duration_seconds)
-    elif "валера покажи" in user_message:
+    elif "валера покажи" or "валєра покажи" in user_message:
         message = await generate_image_response(user_message, user_name)
         await update.message.reply_text(message)        
-    elif "валера" in user_message or (update.message.reply_to_message and update.message.reply_to_message.from_user.id == context.bot.id):
+    elif "валера" or "валєра" in user_message or (update.message.reply_to_message and update.message.reply_to_message.from_user.id == context.bot.id):
         message = await generate_response(user_message, user_name)
         await update.message.reply_text(message)
     else:
@@ -105,7 +106,8 @@ async def trigger_words(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
             await process_text_message(update, context)
 
 def main() -> None:
-    TOKEN = "7608860683:AAFq_3vq2WCaiIz3euz9OZCsU4CDD16Bf6Q"
+    load_dotenv()
+    TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
     if not TOKEN:
         raise ValueError("Не знайдено токен! Задай змінну оточення TELEGRAM_BOT_TOKEN.")
     

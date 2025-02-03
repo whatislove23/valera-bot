@@ -3,4 +3,5 @@ speechrecognition
 g4f[all]
 python-telegram-bot  
 pydub  
-edge-tts  
+edge-tts
+python-dotenv
