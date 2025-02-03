@@ -1,0 +1,6 @@
+asyncio  
+speechrecognition  
+g4f[all]
+python-telegram-bot  
+pydub  
+edge-tts  
