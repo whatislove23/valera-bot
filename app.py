@@ -74,21 +74,21 @@ async def generate_voice_message(text: str) -> str:
 
 async def process_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     global history
-    if len(history) > 10000:
+    if len(history) > 1000:
         history = [initial_message]
     
     user_message = update.message.text.lower()
     user_name = update.message.from_user.first_name
     
-    if "валера розкажи" or "валєра" in user_message or (update.message.reply_to_message and update.message.reply_to_message.voice and update.message.reply_to_message.from_user.id == context.bot.id):
+    if "валера розкажи" in user_message or (update.message.reply_to_message and update.message.reply_to_message.voice and update.message.reply_to_message.from_user.id == context.bot.id):
         message = await generate_response(user_message, user_name)
         file_path = await asyncio.create_task(generate_voice_message(message))
         with open(file_path, "rb") as file:
             await update.message.reply_voice(file, duration=AudioSegment.from_ogg(file_path).duration_seconds)
-    elif "валера покажи" or "валєра покажи" in user_message:
+    elif "валера покажи" in user_message:
         message = await generate_image_response(user_message, user_name)
         await update.message.reply_text(message)        
-    elif "валера" or "валєра" in user_message or (update.message.reply_to_message and update.message.reply_to_message.from_user.id == context.bot.id):
+    elif "валера" in user_message or (update.message.reply_to_message and update.message.reply_to_message.from_user.id == context.bot.id):
         message = await generate_response(user_message, user_name)
         await update.message.reply_text(message)
     else:
