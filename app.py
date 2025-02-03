@@ -12,10 +12,6 @@ initial_message = {"role": "system", "content": lore}
 history = [initial_message]
 
 
-
-
-from diffusers import StableDiffusionPipeline
-import torch
 client = Client()
 recognizer = sr.Recognizer()
 
