@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 import uvicorn
 from fastapi import FastAPI
+import threading
 
 app = FastAPI()
 
@@ -129,5 +130,18 @@ def main() -> None:
     application.run_polling()
 
 if __name__ == '__main__':
-    main()
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+
+    def start_fastapi():
+        uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 4000)))
+
+    def start_telegram_bot():
+        main()
+
+    fastapi_thread = threading.Thread(target=start_fastapi)
+    telegram_bot_thread = threading.Thread(target=start_telegram_bot)
+
+    fastapi_thread.start()
+    telegram_bot_thread.start()
+
+    fastapi_thread.join()
+    telegram_bot_thread.join()
