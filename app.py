@@ -9,6 +9,17 @@ import edge_tts
 from appLor import lore
 from dotenv import load_dotenv
 
+import uvicorn
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}
+
+
+
 initial_message = {"role": "system", "content": lore}
 history = [initial_message]
 
@@ -100,10 +111,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def trigger_words(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if update:
-        if update.message.voice:
-            await handle_voice_message(update, context)
         if update.message.text:
             await process_text_message(update, context)
+        if update.message.voice:
+            await handle_voice_message(update, context)
 
 def main() -> None:
     load_dotenv()
@@ -119,3 +130,4 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+    uvicorn.run(app, host="0.0.0.0", port=8080)

@@ -5,3 +5,5 @@ python-telegram-bot
 pydub  
 edge-tts
 python-dotenv
+fastapi
+uvicorn
